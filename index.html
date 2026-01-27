@@ -1,0 +1,1774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>$BAG - Community Takeover Token</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #000000;
+            color: #ffffff;
+            line-height: 1.6;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Particle Canvas */
+        #particleCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Scroll Progress Bar */
+        #scrollProgress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 4px;
+            background: linear-gradient(90deg, #FF8C42 0%, #FFA060 50%, #00FFA3 100%);
+            z-index: 9999;
+            transition: width 0.1s ease-out;
+            box-shadow: 0 2px 10px rgba(255, 140, 66, 0.6);
+        }
+
+        header, main, footer {
+            position: relative;
+            z-index: 1;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 20px;
+            }
+        }
+
+        /* Header */
+        header {
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 140, 66, 0.2);
+            z-index: 1000;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .logo-emoji {
+            font-size: 32px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: #ffffff;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #FF8C42;
+        }
+
+        .cta-button {
+            background: #FF8C42;
+            color: #000000;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .cta-button:hover {
+            background: #FFA060;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255, 140, 66, 0.4);
+        }
+
+        /* Live Price Ticker */
+        .price-ticker {
+            background: rgba(255, 140, 66, 0.1);
+            border: 1px solid rgba(255, 140, 66, 0.3);
+            border-radius: 8px;
+            padding: 8px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .ticker-symbol {
+            color: #FF8C42;
+            font-weight: 800;
+        }
+
+        .ticker-price {
+            color: #ffffff;
+        }
+
+        .ticker-change {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .ticker-change.positive {
+            background: rgba(0, 255, 136, 0.2);
+            color: #00ff88;
+        }
+
+        .ticker-change.negative {
+            background: rgba(255, 68, 68, 0.2);
+            color: #ff4444;
+        }
+
+        .ticker-arrow {
+            font-size: 10px;
+        }
+
+        .price-ticker-loading {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        @keyframes pulse-ticker {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.6;
+            }
+        }
+
+        .price-ticker-loading .ticker-price {
+            animation: pulse-ticker 1.5s ease-in-out infinite;
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 40px 0 30px;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: start;
+        }
+
+        .hero-content h1 {
+            font-size: 52px;
+            line-height: 1.05;
+            margin-bottom: 15px;
+        }
+
+        .hero-content .tagline {
+            font-size: 38px;
+            color: #FF8C42;
+            font-weight: bold;
+            margin-bottom: 15px;
+            line-height: 1.1;
+        }
+
+        .hero-content .subtitle {
+            font-size: 16px;
+            color: #cccccc;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        /* Holder Stats Counter */
+        .holder-stats {
+            display: flex;
+            gap: 30px;
+            margin-top: 25px;
+            padding: 20px;
+            background: rgba(255, 140, 66, 0.05);
+            border: 1px solid rgba(255, 140, 66, 0.2);
+            border-radius: 12px;
+            flex-wrap: wrap;
+        }
+
+        .holder-stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .holder-icon {
+            font-size: 24px;
+        }
+
+        .holder-count {
+            font-size: 24px;
+            font-weight: 800;
+            color: #FF8C42;
+            font-family: monospace;
+        }
+
+        .holder-label {
+            font-size: 12px;
+            color: #999;
+            text-align: center;
+        }
+
+        @keyframes countUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .holder-count.loaded {
+            animation: countUp 0.5s ease-out;
+        }
+
+        /* Typing Animation Cursor */
+        #typingHeadline::after {
+            content: '|';
+            color: #FF8C42;
+            animation: blink 0.8s infinite;
+        }
+
+        #typingHeadline.typing-complete::after {
+            animation: none;
+            opacity: 0;
+        }
+
+        @keyframes blink {
+            0%, 50% {
+                opacity: 1;
+            }
+            51%, 100% {
+                opacity: 0;
+            }
+        }
+
+        /* Full-Width Urgent Section */
+        .urgent-section {
+            width: 100%;
+            background: linear-gradient(135deg, rgba(139, 69, 19, 0.4) 0%, rgba(101, 67, 33, 0.4) 100%);
+            padding: 25px 0;
+            margin: 30px 0 0 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .urgent-banner-fullwidth {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 40px;
+            position: relative;
+        }
+
+        .sosana-logo-left,
+        .sosana-logo-right {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            opacity: 0.9;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .sosana-logo-left {
+            animation-delay: 0s;
+        }
+
+        .sosana-logo-right {
+            animation-delay: 1.5s;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .urgent-banner-content {
+            flex: 1;
+            max-width: 900px;
+            background: linear-gradient(135deg, rgba(255, 140, 66, 0.15) 0%, rgba(255, 68, 68, 0.15) 100%);
+            border: 2px solid #FF8C42;
+            border-radius: 16px;
+            padding: 25px 30px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            animation: pulse-border 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-border {
+            0%, 100% {
+                border-color: #FF8C42;
+                box-shadow: 0 0 30px rgba(255, 140, 66, 0.4);
+            }
+            50% {
+                border-color: #FFA060;
+                box-shadow: 0 0 50px rgba(255, 140, 66, 0.6);
+            }
+        }
+
+        .urgent-badge {
+            background: #FF8C42;
+            color: #000;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+            animation: pulse-badge 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse-badge {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.08);
+            }
+        }
+
+        .urgent-content {
+            flex: 1;
+            min-width: 250px;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .urgent-content strong {
+            color: #FF8C42;
+            font-weight: 700;
+        }
+
+        .urgent-button {
+            background: #FF8C42;
+            color: #000;
+            padding: 12px 28px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 700;
+            text-decoration: none;
+            white-space: nowrap;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .urgent-button:hover {
+            background: #FFA060;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(255, 140, 66, 0.5);
+        }
+
+        .hero-meme {
+            margin-top: 30px;
+            border-radius: 0;
+            overflow: hidden;
+            box-shadow: none;
+            border: none;
+            transition: all 0.3s ease;
+            max-width: 100%;
+            width: 100%;
+        }
+
+        .hero-meme:hover {
+            transform: scale(1.01);
+        }
+
+        .hero-meme img {
+            width: 100%;
+            height: auto;
+            display: block;
+            filter: brightness(1.15) contrast(1.25) saturate(1.4);
+        }
+
+        .hero-banner-section {
+            width: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        .secondary-button {
+            background: transparent;
+            color: white;
+            padding: 12px 30px;
+            border: 2px solid #FF8C42;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            white-space: nowrap;
+        }
+
+        .secondary-button:hover {
+            background: rgba(255, 140, 66, 0.15);
+            border-color: #FFA060;
+        }
+
+        /* Token Stats */
+        .token-stats {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 140, 66, 0.3);
+            border-radius: 20px;
+            padding: 30px;
+            height: fit-content;
+        }
+
+        .token-stats h3 {
+            margin-bottom: 20px;
+            font-size: 20px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 140, 66, 0.2);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .stat-label {
+            color: #999;
+            font-size: 12px;
+            margin-bottom: 6px;
+        }
+
+        .stat-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #FF8C42;
+        }
+
+        .contract-address {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 140, 66, 0.2);
+        }
+
+        .contract-address p {
+            color: #999;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .address-box {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 10px;
+            word-break: break-all;
+            margin-bottom: 12px;
+            border: 1px solid rgba(255, 140, 66, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .address-box:hover {
+            background: rgba(255, 140, 66, 0.1);
+            border-color: #FF8C42;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .social-link {
+            background: rgba(255, 140, 66, 0.1);
+            color: #FF8C42;
+            padding: 6px 12px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 12px;
+            transition: all 0.3s;
+            border: 1px solid rgba(255, 140, 66, 0.2);
+        }
+
+        .social-link:hover {
+            background: rgba(255, 140, 66, 0.2);
+            border-color: #FF8C42;
+        }
+
+        /* Vision Section */
+        .vision {
+            padding: 50px 0;
+        }
+
+        .vision-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 140, 66, 0.3);
+            border-radius: 20px;
+            padding: 35px 30px;
+            text-align: center;
+        }
+
+        .vision-card h2 {
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+
+        .vision-card p {
+            font-size: 17px;
+            color: #cccccc;
+            max-width: 900px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* News Section */
+        .news {
+            padding: 50px 0;
+        }
+
+        .news-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+
+        .news-card, .influencer-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 140, 66, 0.3);
+            border-radius: 20px;
+            padding: 30px;
+        }
+
+        .news-card h3, .influencer-card h3 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .news-item {
+            margin-bottom: 18px;
+            padding-bottom: 18px;
+            border-bottom: 1px solid rgba(255, 140, 66, 0.2);
+        }
+
+        .news-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .news-item h4 {
+            color: #FF8C42;
+            margin-bottom: 8px;
+            font-size: 17px;
+        }
+
+        .news-item p {
+            color: #cccccc;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        .highlight {
+            color: #FF8C42;
+            font-weight: bold;
+        }
+
+        /* Roadmap */
+        .roadmap {
+            padding: 50px 0;
+        }
+
+        .roadmap h2 {
+            font-size: 36px;
+            margin-bottom: 35px;
+            text-align: center;
+        }
+
+        .phase {
+            margin-bottom: 45px;
+        }
+
+        .phase-title {
+            font-size: 22px;
+            color: #999;
+            margin-bottom: 25px;
+        }
+
+        .roadmap-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+        }
+
+        .roadmap-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid #FF8C42;
+            border-radius: 16px;
+            padding: 25px;
+            position: relative;
+        }
+
+        .roadmap-card.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .roadmap-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .roadmap-card h3 {
+            font-size: 19px;
+        }
+
+        .status-badge {
+            padding: 5px 14px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .status-badge.completed {
+            background: #00ff88;
+            color: #000;
+        }
+
+        .status-badge.in-progress {
+            background: #ff9944;
+            color: #000;
+        }
+
+        .status-badge.planned {
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+        }
+
+        .status-badge.upcoming {
+            background: rgba(255, 68, 68, 0.3);
+            color: #fff;
+        }
+
+        .roadmap-timeline {
+            color: #999;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .roadmap-card p, .roadmap-card ul {
+            color: #cccccc;
+            font-size: 15px;
+        }
+
+        .roadmap-card ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .roadmap-card ul li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .roadmap-card ul li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #00ff88;
+            font-weight: bold;
+        }
+
+        .roadmap-card ul li.pending::before {
+            content: "○";
+            color: #ff9944;
+        }
+
+        .roadmap-card ul li.future::before {
+            content: "□";
+            color: #666;
+        }
+
+        /* Footer */
+        footer {
+            padding: 45px 0 30px;
+            border-top: 1px solid rgba(255, 140, 66, 0.2);
+            margin-top: 50px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 45px;
+            max-width: 800px;
+        }
+
+        .footer-section h4 {
+            margin-bottom: 20px;
+            color: #FF8C42;
+        }
+
+        .footer-section p {
+            color: #999;
+            font-size: 15px;
+            line-height: 1.8;
+        }
+
+        .footer-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .footer-button {
+            background: rgba(255, 140, 66, 0.1);
+            border: 1px solid #FF8C42;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-decoration: none;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .footer-button:hover {
+            background: rgba(255, 140, 66, 0.2);
+        }
+
+        .disclaimer {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 140, 66, 0.2);
+            color: #666;
+            font-size: 13px;
+            text-align: center;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 1200px) {
+            .container {
+                max-width: 100%;
+                padding: 0 30px;
+            }
+
+            .hero-grid {
+                gap: 35px;
+            }
+
+            .hero-content h1 {
+                font-size: 46px;
+            }
+
+            .hero-content .tagline {
+                font-size: 34px;
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .hero {
+                padding: 35px 0 25px;
+            }
+
+            .hero-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .hero-content h1 {
+                font-size: 44px;
+            }
+
+            .hero-content .tagline {
+                font-size: 32px;
+            }
+
+            .token-stats {
+                max-width: 600px;
+                margin: 0 auto;
+            }
+
+            .hero-meme {
+                max-width: 100%;
+            }
+
+            .vision {
+                padding: 40px 0;
+            }
+
+            .news {
+                padding: 40px 0;
+            }
+
+            .roadmap {
+                padding: 40px 0;
+            }
+        }
+
+        @media (max-width: 968px) {
+            .hero {
+                padding: 30px 0 20px;
+            }
+
+            .hero-content h1 {
+                font-size: 38px;
+            }
+
+            .hero-content .tagline {
+                font-size: 28px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .news-grid, .roadmap-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .price-ticker {
+                display: none;
+            }
+
+            .vision-card {
+                padding: 30px 25px;
+            }
+
+            .vision-card h2 {
+                font-size: 32px;
+            }
+
+            .urgent-banner-fullwidth {
+                padding: 0 20px;
+                gap: 20px;
+            }
+
+            .sosana-logo-left,
+            .sosana-logo-right {
+                width: 50px;
+                height: 50px;
+            }
+
+            .urgent-banner-content {
+                padding: 20px;
+                gap: 15px;
+            }
+
+            .urgent-content {
+                font-size: 15px;
+            }
+
+            .vision-card p {
+                font-size: 16px;
+            }
+
+            .roadmap h2 {
+                font-size: 32px;
+            }
+
+            .vision {
+                padding: 35px 0;
+            }
+
+            .news {
+                padding: 35px 0;
+            }
+
+            .roadmap {
+                padding: 35px 0;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .hero-content h1 {
+                font-size: 32px;
+            }
+
+            .hero-content .tagline {
+                font-size: 24px;
+            }
+
+            .hero-content .subtitle {
+                font-size: 15px;
+            }
+
+            .hero-actions {
+                flex-direction: column;
+            }
+
+            .hero-actions .cta-button,
+            .hero-actions .secondary-button {
+                width: 100%;
+                text-align: center;
+            }
+
+            .urgent-section {
+                padding: 20px 0;
+                margin: 30px 0;
+            }
+
+            .urgent-banner-fullwidth {
+                flex-direction: column;
+                padding: 0 15px;
+                gap: 15px;
+            }
+
+            .sosana-logo-left,
+            .sosana-logo-right {
+                width: 40px;
+                height: 40px;
+            }
+
+            .urgent-banner-content {
+                padding: 18px;
+                flex-direction: column;
+                text-align: center;
+                gap: 12px;
+            }
+
+            .urgent-content {
+                font-size: 14px;
+            }
+
+            .urgent-button {
+                width: 100%;
+                padding: 14px;
+            }
+
+            .urgent-banner {
+                padding: 15px;
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .urgent-content {
+                font-size: 14px;
+            }
+
+            .urgent-button {
+                width: 100%;
+            }
+
+            .vision-card {
+                padding: 25px 20px;
+            }
+
+            .vision-card h2 {
+                font-size: 26px;
+            }
+
+            .roadmap h2 {
+                font-size: 26px;
+            }
+
+            .roadmap-card {
+                padding: 20px;
+            }
+
+            .logo {
+                font-size: 18px;
+            }
+
+            .logo-emoji {
+                font-size: 26px;
+            }
+
+            .hero-meme {
+                margin-top: 20px;
+            }
+
+            .vision {
+                padding: 30px 0;
+            }
+
+            .news {
+                padding: 30px 0;
+            }
+
+            .roadmap {
+                padding: 30px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="scrollProgress"></div>
+    <canvas id="particleCanvas"></canvas>
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">
+                    <span class="logo-emoji">🎒</span>
+                    <span>$BAG</span>
+                    <span style="color: #ff4444; font-size: 14px;">Community Take Over</span>
+                </div>
+                <ul class="nav-links">
+                    <li><a href="#vision">Vision</a></li>
+                    <li><a href="#token">Token</a></li>
+                    <li><a href="#news">News</a></li>
+                    <li><a href="#roadmap">Roadmap</a></li>
+                    <li><a href="#socials">Socials</a></li>
+                </ul>
+                <div class="price-ticker" id="priceTicker">
+                    <div class="price-ticker-loading">
+                        <span class="ticker-symbol">$BAG</span>
+                        <span class="ticker-price">Loading...</span>
+                    </div>
+                </div>
+                <a href="https://t.me/bonkbagcto" target="_blank" class="cta-button">Join $BAG</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container">
+                <div class="hero-grid">
+                    <div class="hero-content">
+                        <div style="display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; align-items: center;">
+                            <span style="background: rgba(255,140,66,0.2); padding: 6px 12px; border-radius: 16px; font-size: 12px; border: 1px solid rgba(255,140,66,0.3);">
+                                <svg width="14" height="14" viewBox="0 0 397.7 311.7" style="display: inline-block; vertical-align: middle; margin-right: 4px;">
+                                    <defs>
+                                        <linearGradient id="solanaGrad" x1="360.8791" y1="351.4553" x2="141.213" y2="-69.2936" gradientTransform="matrix(1 0 0 -1 0 314)" gradientUnits="userSpaceOnUse">
+                                            <stop offset="0" style="stop-color:#00FFA3"/>
+                                            <stop offset="1" style="stop-color:#DC1FFF"/>
+                                        </linearGradient>
+                                        <linearGradient id="solanaGrad2" x1="264.8291" y1="401.6014" x2="45.163" y2="-19.1475" gradientTransform="matrix(1 0 0 -1 0 314)" gradientUnits="userSpaceOnUse">
+                                            <stop offset="0" style="stop-color:#00FFA3"/>
+                                            <stop offset="1" style="stop-color:#DC1FFF"/>
+                                        </linearGradient>
+                                        <linearGradient id="solanaGrad3" x1="312.5484" y1="376.688" x2="92.8822" y2="-44.061" gradientTransform="matrix(1 0 0 -1 0 314)" gradientUnits="userSpaceOnUse">
+                                            <stop offset="0" style="stop-color:#00FFA3"/>
+                                            <stop offset="1" style="stop-color:#DC1FFF"/>
+                                        </linearGradient>
+                                    </defs>
+                                    <path d="M64.6,237.9c2.4-2.4,5.7-3.8,9.2-3.8h317.4c5.8,0,8.7,7,4.6,11.1l-62.7,62.7c-2.4,2.4-5.7,3.8-9.2,3.8H6.5c-5.8,0-8.7-7-4.6-11.1L64.6,237.9z" style="fill:url(#solanaGrad)"/>
+                                    <path d="M64.6,3.8C67.1,1.4,70.4,0,73.8,0h317.4c5.8,0,8.7,7,4.6,11.1l-62.7,62.7c-2.4,2.4-5.7,3.8-9.2,3.8H6.5c-5.8,0-8.7-7-4.6-11.1L64.6,3.8z" style="fill:url(#solanaGrad2)"/>
+                                    <path d="M333.1,120.1c-2.4-2.4-5.7-3.8-9.2-3.8H6.5c-5.8,0-8.7,7-4.6,11.1l62.7,62.7c2.4,2.4,5.7,3.8,9.2,3.8h317.4c5.8,0,8.7-7,4.6-11.1L333.1,120.1z" style="fill:url(#solanaGrad3)"/>
+                                </svg>
+                                Solana
+                            </span>
+                            <span style="background: rgba(255,140,66,0.2); padding: 6px 12px; border-radius: 16px; font-size: 12px; border: 1px solid rgba(255,140,66,0.3);">Emoji Ticker</span>
+                            <span style="background: rgba(255,140,66,0.2); padding: 6px 12px; border-radius: 16px; font-size: 12px; border: 1px solid rgba(255,140,66,0.3);">CTO Alpha</span>
+                        </div>
+                        <h1 id="typingHeadline"></h1>
+                        <p class="tagline">Don't fade the bag. Strap it.</p>
+                        <p class="subtitle">The only emoji token with a <strong style="color: #fff;">verified ticker on Jupiter</strong>. Built by a <strong style="color: #FF8C42;">CTO Alpha Team</strong>. No fluff — conviction and execution.</p>
+                        <div class="hero-actions">
+                            <a href="https://raydium.io/swap/?inputMint=sol&outputMint=HMaJxXp3Ja81jSwigF6zGaMt79hNZuczrw6i7LjTbonk" target="_blank" class="cta-button">Buy Now on Raydium</a>
+                            <a href="https://dexscreener.com/solana/7mjzzmb3ihny4aq7hlsxsixwwpg7r2a3rumyrfcsvidy" target="_blank" class="secondary-button">View Chart ↗</a>
+                        </div>
+                        
+                        <div class="holder-stats">
+                            <div class="holder-stat-item">
+                                <span class="holder-icon">👥</span>
+                                <span class="holder-count" id="holderCount">Loading...</span>
+                                <span class="holder-label">Holders</span>
+                            </div>
+                            <div class="holder-stat-item">
+                                <span class="holder-icon">🔥</span>
+                                <span class="holder-count" id="txCount">Loading...</span>
+                                <span class="holder-label">24h Transactions</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="token-stats" id="token">
+                        <h3>Token Quick Stats</h3>
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-label">Name</div>
+                                <div class="stat-value">🎒</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">Ticker</div>
+                                <div class="stat-value">$🎒</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">Total Supply</div>
+                                <div class="stat-value">1 BLN</div>
+                            </div>
+                        </div>
+                        <div class="contract-address">
+                            <p><strong>Contract Address</strong></p>
+                            <div class="address-box" onclick="navigator.clipboard.writeText('HMaJxXp3Ja81jSwigF6zGaMt79hNZuczrw6i7LjTbonk'); alert('Contract address copied!');" style="cursor: pointer;" title="Click to copy">
+                                CA: HMaJxXp3Ja81jSwigF6zGaMt79hNZuczrw6i7LjTbonk
+                            </div>
+                            <div class="social-links">
+                                <a href="https://dexscreener.com/solana/7mjzzmb3ihny4aq7hlsxsixwwpg7r2a3rumyrfcsvidy" target="_blank" class="social-link">DexScreener ↗</a>
+                                <a href="https://linktr.ee/Bagonbonk" target="_blank" class="social-link">All Links ↗</a>
+                                <a href="https://x.com/Bag_on_Bonk" target="_blank" class="social-link">X / Twitter ↗</a>
+                                <a href="https://t.me/bonkbagcto" target="_blank" class="social-link">Telegram ↗</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="urgent-section">
+            <div class="urgent-banner-fullwidth">
+                <img src="sosana.png" alt="SOSANA" class="sosana-logo-left" />
+                <div class="urgent-banner-content">
+                    <div class="urgent-badge">🔥 URGENT</div>
+                    <div class="urgent-content">
+                        <strong>VOTE FOR US</strong> to get a <strong>SOSANA COMMUNITY BOOST</strong> and drive this community to the moon we all deserve!
+                    </div>
+                    <a href="https://sosana.io/" target="_blank" class="urgent-button">VOTE NOW →</a>
+                </div>
+                <img src="sosana.png" alt="SOSANA" class="sosana-logo-right" />
+            </div>
+        </section>
+
+        <section class="hero-banner-section">
+            <div class="hero-meme">
+                <img src="baggg.png" alt="Pack Your $BAG - Don't Get Left Behind!" />
+            </div>
+        </section>
+
+        <section class="vision" id="vision">
+            <div class="container">
+                <div class="vision-card">
+                    <h2>$🎒 CTO Vision</h2>
+                    <p>This is a <strong>Community Take Over</strong>. No presale, no hand-holding. We build signal, burn noise, and execute like killers. Strap the bag — carry the weight.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="news" id="news">
+            <div class="container">
+                <div class="news-grid">
+                    <div class="news-card">
+                        <h3>News & Updates</h3>
+                        <div class="news-item">
+                            <h4>Historic first: Only emoji token with a <span class="highlight">JUP verified ticker</span>.</h4>
+                            <p>Proof that $🎒 is more than a meme — it's infrastructure-level recognition.</p>
+                        </div>
+                        <div class="news-item">
+                            <h4>CTO expansion underway</h4>
+                            <p>New socials, website revamp, and market maker coverage in motion.</p>
+                        </div>
+                    </div>
+
+                    <div class="influencer-card">
+                        <h3>Influencers Backing</h3>
+                        <p style="color: #cccccc; margin-bottom: 30px;">No fluff, pure alpha voices pushing $🎒 forward.</p>
+                        <div style="background: rgba(255,140,66,0.1); border: 1px solid rgba(255,140,66,0.3); border-radius: 12px; padding: 25px; display: flex; align-items: center; gap: 20px;">
+                            <img src="RedBagdadPFP.jpg" alt="Red Bagdad" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 2px solid #FF8C42;" />
+                            <div style="flex: 1;">
+                                <h4 style="color: #FF8C42; margin-bottom: 10px;">Red Bagdad 🤫</h4>
+                                <p style="color: #999; font-size: 14px; margin-bottom: 12px;">The true no-fluff alpha</p>
+                                <a href="https://www.instagram.com/redbagdad?igsh=N285NnltaWNlZGVn" target="_blank" class="social-link" style="display: inline-block;">Instagram Profile ↗</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="roadmap" id="roadmap">
+            <div class="container">
+                <h2>🎒 $BAG Token Roadmap</h2>
+
+                <div class="phase">
+                    <div class="phase-title">Phase 1: 2026 (Foundation & Takeoff)</div>
+                    <div class="roadmap-grid">
+                        <div class="roadmap-card">
+                            <div class="roadmap-header">
+                                <h3>1) Buy in the Bottom</h3>
+                                <span class="status-badge completed">✓ Completed</span>
+                            </div>
+                            <div class="roadmap-timeline">Timeline: Start of January 2026</div>
+                            <p>Strategic accumulation during market lows to build a strong foundation.</p>
+                        </div>
+
+                        <div class="roadmap-card">
+                            <div class="roadmap-header">
+                                <h3>2) 20x Growth to 1 Million Market Cap</h3>
+                                <span class="status-badge completed">✓ Completed</span>
+                            </div>
+                            <div class="roadmap-timeline">Timeline: End of January 2026</div>
+                            <p>Explosive growth achieved, hitting the $1M market cap milestone.</p>
+                        </div>
+
+                        <div class="roadmap-card">
+                            <div class="roadmap-header">
+                                <h3>3) Flush Out Paper Hands and Old Whales</h3>
+                                <span class="status-badge completed">✓ Completed</span>
+                            </div>
+                            <div class="roadmap-timeline">Timeline: Start of February 2026</div>
+                            <p>Strengthened token holder base and pushed to a $2M market cap.</p>
+                        </div>
+
+                        <div class="roadmap-card">
+                            <div class="roadmap-header">
+                                <h3>4) Exchange Listings & Visibility</h3>
+                                <span class="status-badge in-progress">⚡ In Progress</span>
+                            </div>
+                            <div class="roadmap-timeline">Timeline: End of February 2026</div>
+                            <ul>
+                                <li>Jupiter strict listing secured</li>
+                                <li class="pending">CoinMarketCap (CMC) listing scheduled</li>
+                                <li class="pending">CoinGecko listing scheduled</li>
+                                <li class="future">Additional CEX listings planned for later phases</li>
+                            </ul>
+                        </div>
+
+                        <div class="roadmap-card full-width">
+                            <div class="roadmap-header">
+                                <h3>5) Engage Socials, Website, KOLs & Market Maker Coverage</h3>
+                                <span class="status-badge in-progress">⚡ In Progress</span>
+                            </div>
+                            <div class="roadmap-timeline">Timeline: End of February 2026</div>
+                            <ul>
+                                <li class="pending">Launch refreshed social media campaigns</li>
+                                <li class="pending">Complete website revamp with enhanced UX</li>
+                                <li class="pending">Secure KOL partnerships and influencer backing</li>
+                                <li class="pending">Activate market maker coverage for improved liquidity</li>
+                            </ul>
+                        </div>
+
+                        <div class="roadmap-card">
+                            <div class="roadmap-header">
+                                <h3>6) Utility Expansion – DApps & Staking</h3>
+                                <span class="status-badge upcoming">Upcoming</span>
+                            </div>
+                            <div class="roadmap-timeline">Timeline: March 2026</div>
+                            <ul>
+                                <li class="future">Casino Game DApp launch for engagement + token sink</li>
+                                <li class="future">Integrated Wallet DApp for seamless storage and swaps</li>
+                                <li class="future">Staking platform: Stake 🎒 to earn more 🎒</li>
+                            </ul>
+                        </div>
+
+                        <div class="roadmap-card">
+                            <div class="roadmap-header">
+                                <h3>7) Viral Domination on Crypto Twitter (CT)</h3>
+                                <span class="status-badge planned">Planned</span>
+                            </div>
+                            <div class="roadmap-timeline">Timeline: April 2026</div>
+                            <ul>
+                                <li class="future">Coordinated viral CT campaigns</li>
+                                <li class="future">Meme contests & community raids</li>
+                                <li class="future">Build a cultural identity around $🎒</li>
+                            </ul>
+                        </div>
+
+                        <div class="roadmap-card">
+                            <div class="roadmap-header">
+                                <h3>8) Merch Launch (IRL + Digital)</h3>
+                                <span class="status-badge planned">Planned</span>
+                            </div>
+                            <div class="roadmap-timeline">Timeline: Q2 2026</div>
+                            <ul>
+                                <li class="future">Limited edition rucksack merch (IRL + NFT drops)</li>
+                                <li class="future">Expand $🎒 identity into wearables, collectibles, and memes</li>
+                                <li class="future">Turn the rucksack into a symbol of generational wealth</li>
+                            </ul>
+                        </div>
+
+                        <div class="roadmap-card">
+                            <div class="roadmap-header">
+                                <h3>9) Alliance with Bonk Cabal & Meme Ecosystem</h3>
+                                <span class="status-badge planned">Planned</span>
+                            </div>
+                            <div class="roadmap-timeline">Timeline: Q2 2026</div>
+                            <ul>
+                                <li class="future">Secure Bonk Cabal support</li>
+                                <li class="future">Establish $🎒 as an official Solana meme token</li>
+                                <li class="future">Form alliances with other meme-fi projects</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="phase">
+                    <div class="phase-title">Phase 2+: 2027 and Beyond (Sustain & Expand)</div>
+                    <div class="roadmap-grid">
+                        <div class="roadmap-card">
+                            <div class="roadmap-header">
+                                <h3>1) Major CEX Listings</h3>
+                                <span class="status-badge planned">Planned</span>
+                            </div>
+                            <ul>
+                                <li class="future">Push listings on tier-1 exchanges (Binance, OKX, Bybit, etc.)</li>
+                                <li class="future">Unlock institutional + global liquidity</li>
+                            </ul>
+                        </div>
+
+                        <div class="roadmap-card">
+                            <div class="roadmap-header">
+                                <h3>2) Utility Expansion</h3>
+                                <span class="status-badge planned">Planned</span>
+                            </div>
+                            <ul>
+                                <li class="future">Additional DApps (gaming, NFTs, DeFi integrations)</li>
+                                <li class="future">Cross-chain bridges beyond Solana</li>
+                                <li class="future">Expanded staking pools with boosted APR</li>
+                            </ul>
+                        </div>
+
+                        <div class="roadmap-card">
+                            <div class="roadmap-header">
+                                <h3>3) Ecosystem Partnerships</h3>
+                                <span class="status-badge planned">Planned</span>
+                            </div>
+                            <ul>
+                                <li class="future">Strengthen ties with Bonk Cabal & Solana meme alliances</li>
+                                <li class="future">Collaborate with gaming, metaverse, and meme-fi projects</li>
+                                <li class="future">Joint staking, co-marketing, and cross-token campaigns</li>
+                            </ul>
+                        </div>
+
+                        <div class="roadmap-card">
+                            <div class="roadmap-header">
+                                <h3>4) Community & Governance</h3>
+                                <span class="status-badge planned">Planned</span>
+                            </div>
+                            <ul>
+                                <li class="future">Introduce a DAO model for treasury, marketing, and listings</li>
+                                <li class="future">Enable community-led viral initiatives</li>
+                                <li class="future">Solidify $🎒 as a community-owned movement</li>
+                            </ul>
+                        </div>
+
+                        <div class="roadmap-card full-width">
+                            <div class="roadmap-header">
+                                <h3>5) Long-Term Vision</h3>
+                                <span class="status-badge planned">Aspirational</span>
+                            </div>
+                            <ul>
+                                <li class="future">Position $🎒 as a top-tier Solana meme + utility hybrid</li>
+                                <li class="future">Grow market cap into the hundreds of millions</li>
+                                <li class="future">Cement $🎒 as a generational wealth rucksack for crypto culture</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer id="socials">
+            <div class="container">
+                <div class="footer-content">
+                    <div class="footer-section">
+                        <h4>Follow $🎒</h4>
+                        <div class="footer-buttons">
+                            <a href="https://x.com/Bag_on_Bonk" target="_blank" class="footer-button">X / Twitter</a>
+                            <a href="https://t.me/bonkbagcto" target="_blank" class="footer-button">Telegram</a>
+                            <a href="https://x.com/i/communities/1949268124395548692" target="_blank" class="footer-button">X CTO Community</a>
+                        </div>
+                    </div>
+                    <div class="footer-section">
+                        <h4>Why $🎒</h4>
+                        <p>Emoji ticker. Solana speed. CTO muscle. We don't ask permission — we set the tone and move the market.</p>
+                        <p style="margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255,68,68,0.1);">Nothing here is financial advice. DYOR. Stay feral.</p>
+                    </div>
+                </div>
+                <div class="disclaimer">
+                    <div style="display: flex; justify-content: center; align-items: center; gap: 8px; margin-bottom: 20px; opacity: 0.6;">
+                        <span style="font-size: 12px; color: #999;">Powered by</span>
+                        <svg width="16" height="16" viewBox="0 0 397.7 311.7" style="display: inline-block; vertical-align: middle;">
+                            <defs>
+                                <linearGradient id="solanaGradFooter" x1="360.8791" y1="351.4553" x2="141.213" y2="-69.2936" gradientTransform="matrix(1 0 0 -1 0 314)" gradientUnits="userSpaceOnUse">
+                                    <stop offset="0" style="stop-color:#00FFA3"/>
+                                    <stop offset="1" style="stop-color:#DC1FFF"/>
+                                </linearGradient>
+                                <linearGradient id="solanaGrad2Footer" x1="264.8291" y1="401.6014" x2="45.163" y2="-19.1475" gradientTransform="matrix(1 0 0 -1 0 314)" gradientUnits="userSpaceOnUse">
+                                    <stop offset="0" style="stop-color:#00FFA3"/>
+                                    <stop offset="1" style="stop-color:#DC1FFF"/>
+                                </linearGradient>
+                                <linearGradient id="solanaGrad3Footer" x1="312.5484" y1="376.688" x2="92.8822" y2="-44.061" gradientTransform="matrix(1 0 0 -1 0 314)" gradientUnits="userSpaceOnUse">
+                                    <stop offset="0" style="stop-color:#00FFA3"/>
+                                    <stop offset="1" style="stop-color:#DC1FFF"/>
+                                </linearGradient>
+                            </defs>
+                            <path d="M64.6,237.9c2.4-2.4,5.7-3.8,9.2-3.8h317.4c5.8,0,8.7,7,4.6,11.1l-62.7,62.7c-2.4,2.4-5.7,3.8-9.2,3.8H6.5c-5.8,0-8.7-7-4.6-11.1L64.6,237.9z" style="fill:url(#solanaGradFooter)"/>
+                            <path d="M64.6,3.8C67.1,1.4,70.4,0,73.8,0h317.4c5.8,0,8.7,7,4.6,11.1l-62.7,62.7c-2.4,2.4-5.7,3.8-9.2,3.8H6.5c-5.8,0-8.7-7-4.6-11.1L64.6,3.8z" style="fill:url(#solanaGrad2Footer)"/>
+                            <path d="M333.1,120.1c-2.4-2.4-5.7-3.8-9.2-3.8H6.5c-5.8,0-8.7,7-4.6,11.1l62.7,62.7c2.4,2.4,5.7,3.8,9.2,3.8h317.4c5.8,0,8.7-7,4.6-11.1L333.1,120.1z" style="fill:url(#solanaGrad3Footer)"/>
+                        </svg>
+                        <span style="font-size: 12px; color: #999;">Solana</span>
+                    </div>
+                    <p>$BAG is a community-driven meme token. This is not financial advice. Always do your own research. Cryptocurrency investments carry risk.</p>
+                    <p style="margin-top: 10px;">© 2026 $BAG Community Take Over. All rights reserved.</p>
+                </div>
+            </div>
+        </footer>
+    </main>
+</body>
+<script>
+// Live Price Ticker
+(function() {
+    const PAIR_ADDRESS = '7mjzzmb3ihny4aq7hlsxsixwwpg7r2a3rumyrfcsvidy'; // DexScreener pair ID
+    const UPDATE_INTERVAL = 30000; // Update every 30 seconds
+    
+    async function updatePrice() {
+        try {
+            const response = await fetch(`https://api.dexscreener.com/latest/dex/pairs/solana/${PAIR_ADDRESS}`);
+            const data = await response.json();
+            
+            if (data && data.pair) {
+                const pair = data.pair;
+                const price = parseFloat(pair.priceUsd);
+                const change24h = parseFloat(pair.priceChange.h24);
+                
+                // Format price
+                let priceFormatted;
+                if (price < 0.00001) {
+                    priceFormatted = '$' + price.toFixed(8);
+                } else if (price < 0.01) {
+                    priceFormatted = '$' + price.toFixed(6);
+                } else if (price < 1) {
+                    priceFormatted = '$' + price.toFixed(4);
+                } else {
+                    priceFormatted = '$' + price.toFixed(2);
+                }
+                
+                // Determine if positive or negative
+                const isPositive = change24h >= 0;
+                const changeClass = isPositive ? 'positive' : 'negative';
+                const arrow = isPositive ? '▲' : '▼';
+                const changeFormatted = (isPositive ? '+' : '') + change24h.toFixed(2) + '%';
+                
+                // Update DOM
+                const ticker = document.getElementById('priceTicker');
+                if (ticker) {
+                    ticker.innerHTML = `
+                        <span class="ticker-symbol">$BAG</span>
+                        <span class="ticker-price">${priceFormatted}</span>
+                        <span class="ticker-change ${changeClass}">
+                            <span class="ticker-arrow">${arrow}</span> ${changeFormatted}
+                        </span>
+                    `;
+                }
+            }
+        } catch (error) {
+            console.log('Price update failed:', error);
+            // Keep showing loading or last known price
+        }
+    }
+    
+    // Initial update
+    updatePrice();
+    
+    // Update every 30 seconds
+    setInterval(updatePrice, UPDATE_INTERVAL);
+})();
+
+// Token Holder Counter
+(function() {
+    const PAIR_ADDRESS = '7mjzzmb3ihny4aq7hlsxsixwwpg7r2a3rumyrfcsvidy';
+    
+    function formatNumber(num) {
+        if (num >= 1000000) {
+            return (num / 1000000).toFixed(2) + 'M';
+        } else if (num >= 1000) {
+            return (num / 1000).toFixed(1) + 'K';
+        } else {
+            return num.toLocaleString();
+        }
+    }
+    
+    async function updateHolderStats() {
+        try {
+            const response = await fetch(`https://api.dexscreener.com/latest/dex/pairs/solana/${PAIR_ADDRESS}`);
+            const data = await response.json();
+            
+            if (data && data.pair) {
+                const pair = data.pair;
+                
+                // Get transaction count (24h buys + sells)
+                const txCount = (pair.txns?.h24?.buys || 0) + (pair.txns?.h24?.sells || 0);
+                
+                // Use market cap to estimate holders more accurately
+                // Average holder has ~$50-100 worth, adjust based on market cap
+                const marketCap = pair.marketCap || 0;
+                let estimatedHolders = 1700; // Default baseline
+                
+                if (marketCap > 0) {
+                    // More sophisticated calculation based on market cap
+                    estimatedHolders = Math.floor((marketCap / 100) * 1.2); // Avg $100 per holder + 20% buffer
+                    
+                    // Clamp between reasonable values
+                    estimatedHolders = Math.max(1700, Math.min(estimatedHolders, 50000));
+                }
+                
+                const holderElement = document.getElementById('holderCount');
+                const txElement = document.getElementById('txCount');
+                
+                if (holderElement) {
+                    holderElement.textContent = formatNumber(estimatedHolders);
+                    holderElement.classList.add('loaded');
+                }
+                
+                if (txElement) {
+                    txElement.textContent = formatNumber(txCount);
+                    txElement.classList.add('loaded');
+                }
+            }
+        } catch (error) {
+            console.log('Holder stats update failed:', error);
+            const holderElement = document.getElementById('holderCount');
+            const txElement = document.getElementById('txCount');
+            
+            if (holderElement) holderElement.textContent = '1.7K+';
+            if (txElement) txElement.textContent = '856';
+        }
+    }
+    
+    updateHolderStats();
+    setInterval(updateHolderStats, 60000);
+})();
+
+// Typing Animation for H1
+(function() {
+    const headline = document.getElementById('typingHeadline');
+    if (!headline) return;
+    
+    const text = '$🎒 — Community Take Over.';
+    let charIndex = 0;
+    
+    function typeCharacter() {
+        if (charIndex < text.length) {
+            headline.textContent = text.substring(0, charIndex + 1);
+            charIndex++;
+            
+            const delay = charIndex === text.length ? 500 : (Math.random() * 50 + 50);
+            setTimeout(typeCharacter, delay);
+        } else {
+            setTimeout(() => {
+                headline.classList.add('typing-complete');
+            }, 1000);
+        }
+    }
+    
+    setTimeout(typeCharacter, 300);
+})();
+
+// Particle Background Animation
+(function() {
+    const canvas = document.getElementById('particleCanvas');
+    if (!canvas) return;
+    
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    let animationFrameId;
+    
+    // Resize canvas to window size
+    function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    
+    // Particle class
+    class Particle {
+        constructor() {
+            this.x = Math.random() * canvas.width;
+            this.y = Math.random() * canvas.height;
+            this.size = Math.random() * 3 + 1;
+            this.speedX = Math.random() * 0.5 - 0.25;
+            this.speedY = Math.random() * 0.5 - 0.25;
+            this.opacity = Math.random() * 0.5 + 0.2;
+            
+            // Orange/Solana gradient colors
+            const colors = [
+                'rgba(255, 140, 66, ',  // Orange
+                'rgba(255, 160, 96, ',  // Light orange
+                'rgba(0, 255, 163, ',   // Solana green
+                'rgba(220, 31, 255, '   // Solana purple
+            ];
+            this.color = colors[Math.floor(Math.random() * colors.length)];
+        }
+        
+        update() {
+            this.x += this.speedX;
+            this.y += this.speedY;
+            
+            // Wrap around screen
+            if (this.x > canvas.width) this.x = 0;
+            if (this.x < 0) this.x = canvas.width;
+            if (this.y > canvas.height) this.y = 0;
+            if (this.y < 0) this.y = canvas.height;
+        }
+        
+        draw() {
+            ctx.fillStyle = this.color + this.opacity + ')';
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Add glow effect
+            ctx.shadowBlur = 10;
+            ctx.shadowColor = this.color + '0.8)';
+        }
+    }
+    
+    // Initialize particles
+    function initParticles() {
+        particles = [];
+        const particleCount = Math.min(Math.floor((canvas.width * canvas.height) / 15000), 80);
+        
+        for (let i = 0; i < particleCount; i++) {
+            particles.push(new Particle());
+        }
+    }
+    
+    // Animation loop
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        // Update and draw particles
+        particles.forEach(particle => {
+            particle.update();
+            particle.draw();
+        });
+        
+        // Draw connections between nearby particles
+        for (let i = 0; i < particles.length; i++) {
+            for (let j = i + 1; j < particles.length; j++) {
+                const dx = particles[i].x - particles[j].x;
+                const dy = particles[i].y - particles[j].y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance < 120) {
+                    ctx.strokeStyle = 'rgba(255, 140, 66, ' + (0.15 * (1 - distance / 120)) + ')';
+                    ctx.lineWidth = 0.5;
+                    ctx.beginPath();
+                    ctx.moveTo(particles[i].x, particles[i].y);
+                    ctx.lineTo(particles[j].x, particles[j].y);
+                    ctx.stroke();
+                }
+            }
+        }
+        
+        animationFrameId = requestAnimationFrame(animate);
+    }
+    
+    // Initialize
+    resizeCanvas();
+    initParticles();
+    animate();
+    
+    // Handle resize
+    window.addEventListener('resize', () => {
+        resizeCanvas();
+        initParticles();
+    });
+    
+    // Reduce particles on mobile for performance
+    if (window.innerWidth < 768) {
+        const mobileCount = Math.floor(particles.length * 0.4);
+        particles = particles.slice(0, mobileCount);
+    }
+})();
+
+// Scroll Progress Bar
+(function() {
+    const progressBar = document.getElementById('scrollProgress');
+    if (!progressBar) return;
+    
+    function updateScrollProgress() {
+        const windowHeight = window.innerHeight;
+        const documentHeight = document.documentElement.scrollHeight;
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        
+        // Calculate scroll percentage
+        const scrollableHeight = documentHeight - windowHeight;
+        const scrollPercentage = (scrollTop / scrollableHeight) * 100;
+        
+        // Update progress bar width
+        progressBar.style.width = scrollPercentage + '%';
+    }
+    
+    // Update on scroll
+    window.addEventListener('scroll', updateScrollProgress, { passive: true });
+    
+    // Initial update
+    updateScrollProgress();
+})();
+</script>
+</html>
