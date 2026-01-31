@@ -380,113 +380,6 @@
             transform: translateY(-2px);
         }
 
-        .urgent-section {
-            width: 100%;
-            background: linear-gradient(135deg, rgba(139, 69, 19, 0.4) 0%, rgba(101, 67, 33, 0.4) 100%);
-            padding: 25px 0;
-            margin: 30px 0 0 0;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .urgent-banner-fullwidth {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 20px;
-            position: relative;
-            flex-wrap: wrap;
-        }
-
-        .sosana-logo-left,
-        .sosana-logo-right {
-            width: 50px;
-            height: 50px;
-            object-fit: contain;
-            opacity: 0.9;
-            animation: float 3s ease-in-out infinite;
-        }
-
-        .sosana-logo-left { animation-delay: 0s; }
-        .sosana-logo-right { animation-delay: 1.5s; }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-        }
-
-        .urgent-banner-content {
-            flex: 1;
-            max-width: 900px;
-            background: linear-gradient(135deg, rgba(255, 140, 66, 0.15) 0%, rgba(255, 68, 68, 0.15) 100%);
-            border: 2px solid #FF8C42;
-            border-radius: 16px;
-            padding: 20px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            flex-wrap: wrap;
-            animation: pulse-border 2s ease-in-out infinite;
-            justify-content: center;
-            text-align: center;
-        }
-
-        @keyframes pulse-border {
-            0%, 100% { border-color: #FF8C42; box-shadow: 0 0 30px rgba(255, 140, 66, 0.4); }
-            50% { border-color: #FFA060; box-shadow: 0 0 50px rgba(255, 140, 66, 0.6); }
-        }
-
-        .urgent-badge {
-            background: #FF8C42;
-            color: #000;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 800;
-            letter-spacing: 0.5px;
-            white-space: nowrap;
-            animation: pulse-badge 1.5s ease-in-out infinite;
-        }
-
-        @keyframes pulse-badge {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.08); }
-        }
-
-        .urgent-content {
-            flex: 1;
-            min-width: 200px;
-            font-size: 15px;
-            line-height: 1.6;
-        }
-
-        .urgent-content strong {
-            color: #FF8C42;
-            font-weight: 700;
-        }
-
-        .urgent-button {
-            background: #FF8C42;
-            color: #000;
-            padding: 12px 28px;
-            border-radius: 10px;
-            font-size: 15px;
-            font-weight: 700;
-            text-decoration: none;
-            white-space: nowrap;
-            transition: all 0.3s ease;
-            border: 2px solid transparent;
-        }
-
-        .urgent-button:hover {
-            background: #FFA060;
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(255, 140, 66, 0.5);
-        }
-
         .hero-banner-section {
             width: 100%;
             margin: 0;
@@ -770,13 +663,6 @@
             .stat-card { padding: 10px 8px; }
             .stat-value { font-size: 18px; }
             .social-links { grid-template-columns: 1fr; }
-            .urgent-section { padding: 20px 0; }
-            .urgent-banner-fullwidth { padding: 0 15px; gap: 15px; flex-direction: column; }
-            .sosana-logo-left,
-            .sosana-logo-right { width: 40px; height: 40px; }
-            .urgent-banner-content { padding: 18px; gap: 12px; flex-direction: column; }
-            .urgent-content { font-size: 14px; }
-            .urgent-button { width: 100%; padding: 14px; }
             .hero-meme { margin-top: 20px; }
             .vision { padding: 30px 0; }
             .vision-card { padding: 25px 20px; }
@@ -911,20 +797,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-        </section>
-
-        <section class="urgent-section">
-            <div class="urgent-banner-fullwidth">
-                <img src="sosana.png" alt="SOSANA" class="sosana-logo-left" />
-                <div class="urgent-banner-content">
-                    <div class="urgent-badge">🔥 URGENT</div>
-                    <div class="urgent-content">
-                        <strong>VOTE FOR US</strong> to get a <strong>SOSANA COMMUNITY BOOST</strong> and drive this community to the moon we all deserve!
-                    </div>
-                    <a href="https://sosana.io/" target="_blank" class="urgent-button">VOTE NOW →</a>
-                </div>
-                <img src="sosana.png" alt="SOSANA" class="sosana-logo-right" />
             </div>
         </section>
 
