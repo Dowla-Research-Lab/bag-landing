@@ -381,132 +381,116 @@
             transform: translateY(-2px);
         }
 
+        /* WINNER SECTION (REPLACED URGENT) */
         .winner-section {
-    width: 100%;
-    background: linear-gradient(135deg, rgba(0, 255, 136, 0.1) 0%, rgba(255, 140, 66, 0.15) 100%);
-    padding: 25px 0;
-    margin: 30px 0 0 0;
-    position: relative;
-    overflow: hidden;
-}
+            width: 100%;
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.1) 0%, rgba(255, 140, 66, 0.15) 100%);
+            padding: 25px 0;
+            margin: 30px 0 0 0;
+            position: relative;
+            overflow: hidden;
+        }
 
-/* Celebration confetti effect (optional subtle background) */
-.winner-section::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-image: 
-        radial-gradient(circle, rgba(255, 215, 0, 0.3) 1px, transparent 1px),
-        radial-gradient(circle, rgba(0, 255, 136, 0.3) 1px, transparent 1px);
-    background-size: 50px 50px, 80px 80px;
-    background-position: 0 0, 40px 40px;
-    opacity: 0.1;
-    pointer-events: none;
-}
+        .winner-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle, rgba(255, 215, 0, 0.3) 1px, transparent 1px),
+                radial-gradient(circle, rgba(0, 255, 136, 0.3) 1px, transparent 1px);
+            background-size: 50px 50px, 80px 80px;
+            background-position: 0 0, 40px 40px;
+            opacity: 0.1;
+            pointer-events: none;
+        }
 
-.winner-banner-fullwidth {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 0 20px;
-    position: relative;
-    z-index: 1;
-}
+        .winner-banner-fullwidth {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 1;
+        }
 
-.winner-banner-content {
-    max-width: 900px;
-    margin: 0 auto;
-    background: linear-gradient(135deg, rgba(0, 255, 136, 0.1) 0%, rgba(255, 140, 66, 0.1) 100%);
-    border: 2px solid #00ff88;
-    border-radius: 16px;
-    padding: 20px;
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    flex-wrap: wrap;
-    animation: celebration-glow 3s ease-in-out infinite;
-    justify-content: center;
-    text-align: center;
-}
+        .winner-banner-content {
+            max-width: 900px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.1) 0%, rgba(255, 140, 66, 0.1) 100%);
+            border: 2px solid #00ff88;
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            animation: celebration-glow 3s ease-in-out infinite;
+            justify-content: center;
+            text-align: center;
+        }
 
-@keyframes celebration-glow {
-    0%, 100% { 
-        border-color: #00ff88; 
-        box-shadow: 0 0 30px rgba(0, 255, 136, 0.4); 
-    }
-    50% { 
-        border-color: #FF8C42; 
-        box-shadow: 0 0 50px rgba(255, 140, 66, 0.5); 
-    }
-}
+        @keyframes celebration-glow {
+            0%, 100% { 
+                border-color: #00ff88; 
+                box-shadow: 0 0 30px rgba(0, 255, 136, 0.4); 
+            }
+            50% { 
+                border-color: #FF8C42; 
+                box-shadow: 0 0 50px rgba(255, 140, 66, 0.5); 
+            }
+        }
 
-.winner-badge {
-    background: linear-gradient(135deg, #00ff88 0%, #00d4aa 100%);
-    color: #000;
-    padding: 8px 16px;
-    border-radius: 20px;
-    font-size: 13px;
-    font-weight: 800;
-    letter-spacing: 0.5px;
-    white-space: nowrap;
-    animation: winner-pulse 2s ease-in-out infinite;
-    box-shadow: 0 4px 15px rgba(0, 255, 136, 0.3);
-}
+        .winner-badge {
+            background: linear-gradient(135deg, #00ff88 0%, #00d4aa 100%);
+            color: #000;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+            animation: winner-pulse 2s ease-in-out infinite;
+            box-shadow: 0 4px 15px rgba(0, 255, 136, 0.3);
+        }
 
-@keyframes winner-pulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-}
+        @keyframes winner-pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
 
-.winner-content {
-    flex: 1;
-    min-width: 200px;
-    font-size: 15px;
-    line-height: 1.6;
-    color: #ffffff;
-}
+        .winner-content {
+            flex: 1;
+            min-width: 200px;
+            font-size: 15px;
+            line-height: 1.6;
+            color: #ffffff;
+        }
 
-.winner-content strong {
-    color: #00ff88;
-    font-weight: 700;
-}
+        .winner-content strong {
+            color: #00ff88;
+            font-weight: 700;
+        }
 
-.winner-button {
-    background: #00ff88;
-    color: #000;
-    padding: 12px 28px;
-    border-radius: 10px;
-    font-size: 15px;
-    font-weight: 700;
-    text-decoration: none;
-    white-space: nowrap;
-    transition: all 0.3s ease;
-    border: 2px solid transparent;
-}
+        .winner-button {
+            background: #00ff88;
+            color: #000;
+            padding: 12px 28px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 700;
+            text-decoration: none;
+            white-space: nowrap;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
 
-.winner-button:hover {
-    background: #00d4aa;
-    transform: translateY(-3px);
-    box-shadow: 0 10px 25px rgba(0, 255, 136, 0.4);
-}
-
-/* Mobile Responsive */
-@media (max-width: 768px) {
-    .winner-section { padding: 20px 0; }
-    .winner-banner-fullwidth { padding: 0 15px; }
-    .winner-banner-content { 
-        padding: 18px; 
-        gap: 12px; 
-        flex-direction: column; 
-    }
-    .winner-content { font-size: 14px; }
-    .winner-button { 
-        width: 100%; 
-        padding: 14px; 
-    }
-}
+        .winner-button:hover {
+            background: #00d4aa;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 255, 136, 0.4);
+        }
 
         .hero-banner-section {
             width: 100%;
@@ -791,11 +775,18 @@
             .stat-card { padding: 10px 8px; }
             .stat-value { font-size: 18px; }
             .social-links { grid-template-columns: 1fr; }
-            .urgent-section { padding: 20px 0; }
-            .urgent-banner-fullwidth { padding: 0 15px; }
-            .urgent-banner-content { padding: 18px; gap: 12px; flex-direction: column; }
-            .urgent-content { font-size: 14px; }
-            .urgent-button { width: 100%; padding: 14px; }
+            .winner-section { padding: 20px 0; }
+            .winner-banner-fullwidth { padding: 0 15px; }
+            .winner-banner-content { 
+                padding: 18px; 
+                gap: 12px; 
+                flex-direction: column; 
+            }
+            .winner-content { font-size: 14px; }
+            .winner-button { 
+                width: 100%; 
+                padding: 14px; 
+            }
             .hero-meme { margin-top: 20px; }
             .vision { padding: 30px 0; }
             .vision-card { padding: 25px 20px; }
@@ -884,8 +875,7 @@
                         <div class="hero-actions">
                             <a href="https://raydium.io/swap/?inputMint=sol&outputMint=HMaJxXp3Ja81jSwigF6zGaMt79hNZuczrw6i7LjTbonk" target="_blank" class="cta-button">Buy Now on Raydium</a>
                             <a href="https://dexscreener.com/solana/7mjzzmb3ihny4aq7hlsxsixwwpg7r2a3rumyrfcsvidy" target="_blank" class="secondary-button">View Chart ↗</a>
-<a href="https://leaderboard.bag.red" target="_blank" class="cta-button" style="background: linear-gradient(135deg, #FF8C42, #ff4444); width: 100%; text-align: center; font-size: 18px; padding: 16px 30px;">🏆 Leaderboard — Top Diamond Hands</a>
-</div>
+                        </div>
                         
                         <div class="holder-stats">
                             <div class="holder-stat-item">
@@ -934,17 +924,18 @@
             </div>
         </section>
 
+        <!-- WINNER SECTION (REPLACED URGENT/SOSANA VOTING) -->
         <section class="winner-section">
-    <div class="winner-banner-fullwidth">
-        <div class="winner-banner-content">
-            <div class="winner-badge">🏆 WE WON</div>
-            <div class="winner-content">
-                <strong>$BAG secured the SOSANA Community Boost!</strong> Huge thanks to everyone who voted and to the entire <strong>SOSANA community</strong> for believing in us. This is just the beginning. 🚀
+            <div class="winner-banner-fullwidth">
+                <div class="winner-banner-content">
+                    <div class="winner-badge">🏆 WE WON</div>
+                    <div class="winner-content">
+                        <strong>$BAG secured the SOSANA Community Boost!</strong> Huge thanks to everyone who voted and to the entire <strong>SOSANA community</strong> for believing in us. This is just the beginning. 🚀
+                    </div>
+                    <a href="https://sosana.io/" target="_blank" class="winner-button">Visit SOSANA →</a>
+                </div>
             </div>
-            <a href="https://sosana.io/" target="_blank" class="winner-button">Visit SOSANA →</a>
-        </div>
-    </div>
-</section>
+        </section>
 
         <section class="hero-banner-section">
             <div class="hero-meme">
@@ -1073,7 +1064,7 @@
                                 </linearGradient>
                             </defs>
                             <path d="M64.6,237.9c2.4-2.4,5.7-3.8,9.2-3.8h317.4c5.8,0,8.7,7,4.6,11.1l-62.7,62.7c-2.4,2.4-5.7,3.8-9.2,3.8H6.5c-5.8,0-8.7-7-4.6-11.1L64.6,237.9z" style="fill:url(#solanaGradFooter)"/>
-                            <path d="M64.6,3.8C67.1,1.4,70.4,0,73.8,0h317.4c5.8,0,8.7,7,4.6,11.1l-62.7,62.7c-2.4,2.4-5.7,3.8,9.2,3.8H6.5c-5.8,0-8.7-7-4.6-11.1L64.6,3.8z" style="fill:url(#solanaGrad2Footer)"/>
+                            <path d="M64.6,3.8C67.1,1.4,70.4,0,73.8,0h317.4c5.8,0,8.7,7,4.6,11.1l-62.7,62.7c-2.4,2.4-5.7,3.8-9.2,3.8H6.5c-5.8,0-8.7-7-4.6-11.1L64.6,3.8z" style="fill:url(#solanaGrad2Footer)"/>
                             <path d="M333.1,120.1c-2.4-2.4-5.7-3.8-9.2-3.8H6.5c-5.8,0-8.7,7-4.6,11.1l62.7,62.7c2.4,2.4,5.7,3.8,9.2,3.8h317.4c5.8,0,8.7-7,4.6-11.1L333.1,120.1z" style="fill:url(#solanaGrad3Footer)"/>
                         </svg>
                         <span style="font-size: 12px; color: #999;">Solana</span>
