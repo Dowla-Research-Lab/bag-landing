@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>$BAG - Community Takeover Token</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎒</text></svg>">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #000000;
+            color: #ffffff;
+            line-height: 1.6;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        #particleCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        #scrollProgress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 4px;
+            background: linear-gradient(90deg, #FF8C42 0%, #FFA060 50%, #00FFA3 100%);
+            z-index: 9999;
+            transition: width 0.1s ease-out;
+            box-shadow: 0 2px 10px rgba(255, 140, 66, 0.6);
+        }
+
+        header, main, footer {
+            position: relative;
+            z-index: 1;
+        }
+
+        header {
+            background: rgba(0, 0, 0, 0.95);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(255, 140, 66, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 20px;
+            font-weight: 800;
+            color: #FF8C42;
+        }
+
+        .logo-emoji {
+            font-size: 28px;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 25px;
+        }
+
+        .nav-links a {
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #FF8C42;
+        }
+
+        .cta-button {
+            background: #FF8C42;
+            color: #000000;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            white-space: nowrap;
+        }
+
+        .cta-button:hover {
+            background: #FFA060;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255, 140, 66, 0.4);
+        }
+
+        .price-ticker {
+            background: rgba(255, 140, 66, 0.1);
+            border: 1px solid rgba(255, 140, 66, 0.3);
+            border-radius: 8px;
+            padding: 8px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .ticker-symbol {
+            color: #FF8C42;
+            font-weight: 800;
+        }
+
+        .ticker-price {
+            color: #ffffff;
+        }
+
+        .ticker-change {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .ticker-change.positive {
+            background: rgba(0, 255, 136, 0.2);
+            color: #00ff88;
+        }
+
+        .ticker-change.negative {
+            background: rgba(255, 68, 68, 0.2);
+            color: #ff4444;
+        }
+
+        .hero {
+            padding: 40px 0 30px;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 40px;
+            align-items: start;
+        }
+
+        .hero-content h1 {
+            font-size: 36px;
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 15px;
+        }
+
+        #typingHeadline::after {
+            content: '|';
+            color: #FF8C42;
+            animation: blink 0.8s infinite;
+        }
+
+        #typingHeadline.typing-complete::after {
+            animation: none;
+            opacity: 0;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        .tagline {
+            font-size: 22px;
+            font-weight: 700;
+            color: #FF8C42;
+            margin-bottom: 12px;
+        }
+
+        .subtitle {
+            font-size: 16px;
+            color: #cccccc;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .holder-stats {
+            display: flex;
+            gap: 20px;
+            margin-top: 25px;
+            padding: 20px;
+            background: rgba(255, 140, 66, 0.05);
+            border: 1px solid rgba(255, 140, 66, 0.2);
+            border-radius: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .holder-stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            flex: 1;
+            min-width: 100px;
+        }
+
+        .holder-icon {
+            font-size: 24px;
+        }
+
+        .holder-count {
+            font-size: 20px;
+            font-weight: 800;
+            color: #FF8C42;
+            font-family: monospace;
+        }
+
+        .holder-label {
+            font-size: 11px;
+            color: #999;
+            text-align: center;
+            line-height: 1.3;
+        }
+
+        @keyframes countUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .holder-count.loaded {
+            animation: countUp 0.5s ease-out;
+        }
+
+        .secondary-button {
+            background: transparent;
+            color: #FF8C42;
+            padding: 12px 30px;
+            border: 2px solid #FF8C42;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            white-space: nowrap;
+        }
+
+        .secondary-button:hover {
+            background: rgba(255, 140, 66, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .token-stats {
+            background: rgba(255, 140, 66, 0.05);
+            padding: 25px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 140, 66, 0.2);
+        }
+
+        .token-stats h3 {
+            margin-bottom: 15px;
+            color: #FF8C42;
+            font-size: 20px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .stat-card {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 12px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid rgba(255, 140, 66, 0.1);
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: #999;
+            margin-bottom: 6px;
+        }
+
+        .stat-value {
+            font-size: 20px;
+            font-weight: 800;
+            color: #fff;
+        }
+
+        .contract-address {
+            margin-top: 15px;
+        }
+
+        .contract-address p {
+            font-size: 12px;
+            margin-bottom: 8px;
+            color: #999;
+        }
+
+        .address-box {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 10px;
+            word-break: break-all;
+            margin-bottom: 12px;
+            border: 1px solid rgba(255, 140, 66, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .address-box:hover {
+            background: rgba(255, 140, 66, 0.1);
+            border-color: #FF8C42;
+        }
+
+        .social-links {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .social-link {
+            background: rgba(255, 140, 66, 0.1);
+            color: #FF8C42;
+            padding: 8px 12px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-align: center;
+            border: 1px solid rgba(255, 140, 66, 0.2);
+        }
+
+        .social-link:hover {
+            background: rgba(255, 140, 66, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* WINNER SECTION (REPLACED URGENT) */
+        .winner-section {
+            width: 100%;
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.1) 0%, rgba(255, 140, 66, 0.15) 100%);
+            padding: 25px 0;
+            margin: 30px 0 0 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .winner-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle, rgba(255, 215, 0, 0.3) 1px, transparent 1px),
+                radial-gradient(circle, rgba(0, 255, 136, 0.3) 1px, transparent 1px);
+            background-size: 50px 50px, 80px 80px;
+            background-position: 0 0, 40px 40px;
+            opacity: 0.1;
+            pointer-events: none;
+        }
+
+        .winner-banner-fullwidth {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .winner-banner-content {
+            max-width: 900px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.1) 0%, rgba(255, 140, 66, 0.1) 100%);
+            border: 2px solid #00ff88;
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            animation: celebration-glow 3s ease-in-out infinite;
+            justify-content: center;
+            text-align: center;
+        }
+
+        @keyframes celebration-glow {
+            0%, 100% { 
+                border-color: #00ff88; 
+                box-shadow: 0 0 30px rgba(0, 255, 136, 0.4); 
+            }
+            50% { 
+                border-color: #FF8C42; 
+                box-shadow: 0 0 50px rgba(255, 140, 66, 0.5); 
+            }
+        }
+
+        .winner-badge {
+            background: linear-gradient(135deg, #00ff88 0%, #00d4aa 100%);
+            color: #000;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+            animation: winner-pulse 2s ease-in-out infinite;
+            box-shadow: 0 4px 15px rgba(0, 255, 136, 0.3);
+        }
+
+        @keyframes winner-pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .winner-content {
+            flex: 1;
+            min-width: 200px;
+            font-size: 15px;
+            line-height: 1.6;
+            color: #ffffff;
+        }
+
+        .winner-content strong {
+            color: #00ff88;
+            font-weight: 700;
+        }
+
+        .winner-button {
+            background: #00ff88;
+            color: #000;
+            padding: 12px 28px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 700;
+            text-decoration: none;
+            white-space: nowrap;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .winner-button:hover {
+            background: #00d4aa;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 255, 136, 0.4);
+        }
+
+        .hero-banner-section {
+            width: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        .hero-meme {
+            margin-top: 30px;
+            border-radius: 0;
+            overflow: hidden;
+            box-shadow: none;
+            border: none;
+            transition: all 0.3s ease;
+            max-width: 100%;
+            width: 100%;
+        }
+
+        .hero-meme:hover {
+            transform: scale(1.01);
+        }
+
+        .hero-meme img {
+            width: 100%;
+            height: auto;
+            display: block;
+            filter: brightness(1.15) contrast(1.25) saturate(1.4);
+        }
+
+        .vision {
+            padding: 40px 0;
+        }
+
+        .vision-card {
+            background: linear-gradient(135deg, rgba(255, 140, 66, 0.1) 0%, rgba(255, 140, 66, 0.05) 100%);
+            padding: 35px 25px;
+            border-radius: 16px;
+            text-align: center;
+            border: 2px solid rgba(255, 140, 66, 0.2);
+        }
+
+        .vision-card h2 {
+            font-size: 32px;
+            margin-bottom: 18px;
+            color: #FF8C42;
+        }
+
+        .vision-card p {
+            font-size: 17px;
+            line-height: 1.7;
+            color: #cccccc;
+        }
+
+        .news {
+            padding: 40px 0;
+        }
+
+        .news-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+        }
+
+        .news-card, .influencer-card {
+            background: rgba(255, 140, 66, 0.05);
+            padding: 28px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 140, 66, 0.2);
+        }
+
+        .news-card h3, .influencer-card h3 {
+            font-size: 22px;
+            margin-bottom: 18px;
+            color: #FF8C42;
+        }
+
+        .news-item {
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 140, 66, 0.1);
+        }
+
+        .news-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .news-item h4 {
+            font-size: 17px;
+            margin-bottom: 8px;
+            color: #ffffff;
+        }
+
+        .news-item p {
+            font-size: 14px;
+            color: #999;
+            line-height: 1.5;
+        }
+
+        .highlight {
+            color: #FF8C42;
+            font-weight: 700;
+        }
+
+        .roadmap {
+            padding: 45px 0;
+        }
+
+        .roadmap h2 {
+            font-size: 36px;
+            text-align: center;
+            margin-bottom: 35px;
+            color: #FF8C42;
+        }
+
+        .roadmap-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .roadmap-card {
+            background: rgba(255, 140, 66, 0.05);
+            padding: 25px;
+            border-radius: 16px;
+            border-left: 4px solid #FF8C42;
+        }
+
+        .roadmap-card.full-width {
+            grid-column: 1;
+        }
+
+        .roadmap-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .roadmap-header h3 {
+            font-size: 19px;
+            color: #ffffff;
+        }
+
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .status-badge.completed {
+            background: rgba(0, 255, 136, 0.2);
+            color: #00ff88;
+        }
+
+        .status-badge.in-progress {
+            background: rgba(255, 140, 66, 0.2);
+            color: #FF8C42;
+        }
+
+        .status-badge.planned {
+            background: rgba(255, 255, 255, 0.1);
+            color: #cccccc;
+        }
+
+        .roadmap-card ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .roadmap-card ul li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .roadmap-card ul li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #00ff88;
+            font-weight: bold;
+        }
+
+        .roadmap-card ul li.pending::before {
+            content: "○";
+            color: #ff9944;
+        }
+
+        .roadmap-card ul li.future::before {
+            content: "○";
+            color: #666;
+        }
+
+        footer {
+            background: rgba(255, 140, 66, 0.02);
+            padding: 45px 0 25px;
+            border-top: 1px solid rgba(255, 140, 66, 0.1);
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .footer-section h4 {
+            margin-bottom: 15px;
+            color: #FF8C42;
+            font-size: 18px;
+        }
+
+        .footer-section p {
+            color: #999;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .footer-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .footer-button {
+            background: rgba(255, 140, 66, 0.1);
+            color: #FF8C42;
+            padding: 12px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-align: center;
+            border: 1px solid rgba(255, 140, 66, 0.2);
+        }
+
+        .footer-button:hover {
+            background: rgba(255, 140, 66, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .disclaimer {
+            text-align: center;
+            color: #666;
+            font-size: 12px;
+            padding-top: 25px;
+            border-top: 1px solid rgba(255, 140, 66, 0.1);
+            line-height: 1.6;
+        }
+
+        /* MOBILE OPTIMIZATIONS */
+        @media (max-width: 768px) {
+            .container { padding: 0 15px; }
+            .logo { font-size: 18px; }
+            .logo-emoji { font-size: 24px; }
+            nav { gap: 10px; }
+            .nav-links { display: none; }
+            .price-ticker { display: none; }
+            .cta-button { padding: 10px 20px; font-size: 14px; }
+            .hero { padding: 30px 0 20px; }
+            .hero-content h1 { font-size: 28px; }
+            .tagline { font-size: 18px; }
+            .subtitle { font-size: 14px; }
+            .hero-actions { flex-direction: column; width: 100%; }
+            .hero-actions .cta-button,
+            .hero-actions .secondary-button { width: 100%; text-align: center; }
+            .holder-stats { padding: 15px; gap: 15px; }
+            .holder-stat-item { min-width: 80px; }
+            .holder-count { font-size: 18px; }
+            .holder-label { font-size: 10px; }
+            .token-stats { padding: 20px 15px; }
+            .token-stats h3 { font-size: 18px; }
+            .stats-grid { grid-template-columns: repeat(3, 1fr); gap: 10px; }
+            .stat-card { padding: 10px 8px; }
+            .stat-value { font-size: 18px; }
+            .social-links { grid-template-columns: 1fr; }
+            .winner-section { padding: 20px 0; }
+            .winner-banner-fullwidth { padding: 0 15px; }
+            .winner-banner-content { 
+                padding: 18px; 
+                gap: 12px; 
+                flex-direction: column; 
+            }
+            .winner-content { font-size: 14px; }
+            .winner-button { 
+                width: 100%; 
+                padding: 14px; 
+            }
+            .hero-meme { margin-top: 20px; }
+            .vision { padding: 30px 0; }
+            .vision-card { padding: 25px 20px; }
+            .vision-card h2 { font-size: 26px; }
+            .vision-card p { font-size: 15px; }
+            .news { padding: 30px 0; }
+            .news-card, .influencer-card { padding: 20px 15px; }
+            .news-card h3, .influencer-card h3 { font-size: 20px; }
+            .roadmap { padding: 30px 0; }
+            .roadmap h2 { font-size: 26px; }
+            .roadmap-card { padding: 20px 15px; }
+            .roadmap-header h3 { font-size: 17px; }
+            footer { padding: 35px 0 20px; }
+            .footer-content { gap: 25px; }
+        }
+
+        @media (max-width: 375px) {
+            .hero-content h1 { font-size: 24px; }
+            .tagline { font-size: 16px; }
+            .stats-grid { grid-template-columns: 1fr; }
+            .holder-stats { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <div id="scrollProgress"></div>
+    <canvas id="particleCanvas"></canvas>
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">
+                    <span class="logo-emoji">🎒</span>
+                    <span>$BAG</span>
+                    <span style="color: #ff4444; font-size: 14px;">Community Take Over</span>
+                </div>
+                <ul class="nav-links">
+                    <li><a href="#vision">Vision</a></li>
+                    <li><a href="#token">Token</a></li>
+                    <li><a href="#news">News</a></li>
+                    <li><a href="#roadmap">Roadmap</a></li>
+                    <li><a href="#socials">Socials</a></li>
+                </ul>
+                <div class="price-ticker" id="priceTicker">
+                    <span class="ticker-symbol">$BAG</span>
+                    <span class="ticker-price">Loading...</span>
+                </div>
+                <a href="https://t.me/bonkbagcto" target="_blank" class="cta-button">Join $BAG</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container">
+                <div class="hero-grid">
+                    <div class="hero-content">
+                        <div style="display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; align-items: center;">
+                            <span style="background: rgba(255,140,66,0.2); padding: 6px 12px; border-radius: 16px; font-size: 12px; border: 1px solid rgba(255,140,66,0.3);">
+                                <svg width="14" height="14" viewBox="0 0 397.7 311.7" style="display: inline-block; vertical-align: middle; margin-right: 4px;">
+                                    <defs>
+                                        <linearGradient id="solanaGrad" x1="360.8791" y1="351.4553" x2="141.213" y2="-69.2936" gradientTransform="matrix(1 0 0 -1 0 314)" gradientUnits="userSpaceOnUse">
+                                            <stop offset="0" style="stop-color:#00FFA3"/>
+                                            <stop offset="1" style="stop-color:#DC1FFF"/>
+                                        </linearGradient>
+                                        <linearGradient id="solanaGrad2" x1="264.8291" y1="401.6014" x2="45.163" y2="-19.1475" gradientTransform="matrix(1 0 0 -1 0 314)" gradientUnits="userSpaceOnUse">
+                                            <stop offset="0" style="stop-color:#00FFA3"/>
+                                            <stop offset="1" style="stop-color:#DC1FFF"/>
+                                        </linearGradient>
+                                        <linearGradient id="solanaGrad3" x1="312.5484" y1="376.688" x2="92.8822" y2="-44.061" gradientTransform="matrix(1 0 0 -1 0 314)" gradientUnits="userSpaceOnUse">
+                                            <stop offset="0" style="stop-color:#00FFA3"/>
+                                            <stop offset="1" style="stop-color:#DC1FFF"/>
+                                        </linearGradient>
+                                    </defs>
+                                    <path d="M64.6,237.9c2.4-2.4,5.7-3.8,9.2-3.8h317.4c5.8,0,8.7,7,4.6,11.1l-62.7,62.7c-2.4,2.4-5.7,3.8-9.2,3.8H6.5c-5.8,0-8.7-7-4.6-11.1L64.6,237.9z" style="fill:url(#solanaGrad)"/>
+                                    <path d="M64.6,3.8C67.1,1.4,70.4,0,73.8,0h317.4c5.8,0,8.7,7,4.6,11.1l-62.7,62.7c-2.4,2.4-5.7,3.8-9.2,3.8H6.5c-5.8,0-8.7-7-4.6-11.1L64.6,3.8z" style="fill:url(#solanaGrad2)"/>
+                                    <path d="M333.1,120.1c-2.4-2.4-5.7-3.8-9.2-3.8H6.5c-5.8,0-8.7,7-4.6,11.1l62.7,62.7c2.4,2.4,5.7,3.8,9.2,3.8h317.4c5.8,0,8.7-7,4.6-11.1L333.1,120.1z" style="fill:url(#solanaGrad3)"/>
+                                </svg>
+                                Solana
+                            </span>
+                            <span style="background: rgba(255,140,66,0.2); padding: 6px 12px; border-radius: 16px; font-size: 12px; border: 1px solid rgba(255,140,66,0.3);">Emoji Ticker</span>
+                            <span style="background: rgba(255,140,66,0.2); padding: 6px 12px; border-radius: 16px; font-size: 12px; border: 1px solid rgba(255,140,66,0.3);">CTO Alpha</span>
+                        </div>
+                        <h1 id="typingHeadline"></h1>
+                        <p class="tagline">Don't fade the bag. Strap it.</p>
+                        <p class="subtitle">The only emoji token with a <strong style="color: #fff;">verified ticker on Jupiter</strong>. Built by a <strong style="color: #FF8C42;">CTO Alpha Team</strong>. No fluff — conviction and execution.</p>
+                        <div class="hero-actions">
+                            <a href="https://raydium.io/swap/?inputMint=sol&outputMint=HMaJxXp3Ja81jSwigF6zGaMt79hNZuczrw6i7LjTbonk" target="_blank" class="cta-button">Buy Now on Raydium</a>
+                            <a href="https://dexscreener.com/solana/7mjzzmb3ihny4aq7hlsxsixwwpg7r2a3rumyrfcsvidy" target="_blank" class="secondary-button">View Chart ↗</a>
+                        </div>
+                        
+                        <div class="holder-stats">
+                            <div class="holder-stat-item">
+                                <span class="holder-icon">👥</span>
+                                <span class="holder-count" id="holderCount">Loading...</span>
+                                <span class="holder-label">Holders</span>
+                            </div>
+                            <div class="holder-stat-item">
+                                <span class="holder-icon">🔥</span>
+                                <span class="holder-count" id="txCount">Loading...</span>
+                                <span class="holder-label">24h Transactions</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="token-stats" id="token">
+                        <h3>Token Quick Stats</h3>
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-label">Name</div>
+                                <div class="stat-value">🎒</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">Ticker</div>
+                                <div class="stat-value">$🎒</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">Total Supply</div>
+                                <div class="stat-value">1 BLN</div>
+                            </div>
+                        </div>
+                        <div class="contract-address">
+                            <p><strong>Contract Address</strong></p>
+                            <div class="address-box" onclick="navigator.clipboard.writeText('HMaJxXp3Ja81jSwigF6zGaMt79hNZuczrw6i7LjTbonk'); alert('Contract address copied!');" style="cursor: pointer;" title="Click to copy">
+                                CA: HMaJxXp3Ja81jSwigF6zGaMt79hNZuczrw6i7LjTbonk
+                            </div>
+                            <div class="social-links">
+                                <a href="https://dexscreener.com/solana/7mjzzmb3ihny4aq7hlsxsixwwpg7r2a3rumyrfcsvidy" target="_blank" class="social-link">DexScreener ↗</a>
+                                <a href="https://linktr.ee/Bagonbonk" target="_blank" class="social-link">All Links ↗</a>
+                                <a href="https://x.com/Bag_on_Bonk" target="_blank" class="social-link">X / Twitter ↗</a>
+                                <a href="https://t.me/bonkbagcto" target="_blank" class="social-link">Telegram ↗</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- WINNER SECTION (REPLACED URGENT/SOSANA VOTING) -->
+        <section class="winner-section">
+            <div class="winner-banner-fullwidth">
+                <div class="winner-banner-content">
+                    <div class="winner-badge">🏆 WE WON</div>
+                    <div class="winner-content">
+                        <strong>$BAG secured the SOSANA Community Boost!</strong> Huge thanks to everyone who voted and to the entire <strong>SOSANA community</strong> for believing in us. This is just the beginning. 🚀
+                    </div>
+                    <a href="https://sosana.io/" target="_blank" class="winner-button">Visit SOSANA →</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="hero-banner-section">
+            <div class="hero-meme">
+                <img src="baggg.png" alt="Pack Your $BAG - Don't Get Left Behind!" />
+            </div>
+        </section>
+
+        <section class="vision" id="vision">
+            <div class="container">
+                <div class="vision-card">
+                    <h2>$🎒 CTO Vision</h2>
+                    <p>This is a <strong>Community Take Over</strong>. No presale, no hand-holding. We build signal, burn noise, and execute like killers. Strap the bag — carry the weight.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="news" id="news">
+            <div class="container">
+                <div class="news-grid">
+                    <div class="news-card">
+                        <h3>News & Updates</h3>
+                        <div class="news-item">
+                            <h4>Historic first: Only emoji token with a <span class="highlight">JUP verified ticker</span>.</h4>
+                            <p>Proof that $🎒 is more than a meme — it's infrastructure-level recognition.</p>
+                        </div>
+                        <div class="news-item">
+                            <h4>CTO expansion underway</h4>
+                            <p>New socials, website revamp, and market maker coverage in motion.</p>
+                        </div>
+                    </div>
+
+                    <div class="influencer-card">
+                        <h3>Influencers Backing</h3>
+                        <p style="color: #cccccc; margin-bottom: 30px;">No fluff, pure alpha voices pushing $🎒 forward.</p>
+                        <div style="background: rgba(255,140,66,0.1); border: 1px solid rgba(255,140,66,0.3); border-radius: 12px; padding: 25px; display: flex; align-items: center; gap: 20px;">
+                            <img src="RedBagdadPFP.jpg" alt="Red Bagdad" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 2px solid #FF8C42;" />
+                            <div style="flex: 1;">
+                                <h4 style="color: #FF8C42; margin-bottom: 10px;">Red Bagdad 🤫</h4>
+                                <p style="color: #999; font-size: 14px; margin-bottom: 12px;">The true no-fluff alpha</p>
+                                <a href="https://www.instagram.com/redbagdad?igsh=N285NnltaWNlZGVn" target="_blank" class="social-link" style="display: inline-block;">Instagram Profile ↗</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="roadmap" id="roadmap">
+            <div class="container">
+                <h2>$🎒 Roadmap</h2>
+                <div class="roadmap-grid">
+                    <div class="roadmap-card full-width">
+                        <div class="roadmap-header">
+                            <h3>Phase 1: 2026 — Foundation & Traction</h3>
+                            <span class="status-badge in-progress">In Progress</span>
+                        </div>
+                        <ul>
+                            <li>Buy in the Bottom (Jan 2026)</li>
+                            <li class="pending">$1M Market Cap Target (Feb 2026)</li>
+                            <li>Flush Out Paper Hands (Start Feb 2026)</li>
+                            <li>Exchange Listings (End Feb 2026) — 
+                                <span style="display: inline-flex; align-items: center; gap: 6px; margin-left: 4px;">
+                                    <span style="background: rgba(0, 255, 136, 0.2); color: #00ff88; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700;">✓ LIVE</span>
+                                    <img src="https://static.coingecko.com/s/thumbnail-007177f3eca19695592f0b8b0eabbdae282b54154e1be912285c9034ea6cbaf2.png" alt="CoinGecko" style="width: 16px; height: 16px; border-radius: 50%;" title="Listed on CoinGecko" />
+                                    <img src="https://s2.coinmarketcap.com/static/cloud/img/coinmarketcap_white_1.svg" alt="CoinMarketCap" style="width: 16px; height: 16px; filter: brightness(0) invert(1);" title="Listed on CoinMarketCap" />
+                                </span>
+                            </li>
+                            <li class="pending">Engage Socials/Website/KOLs (End Feb 2026)</li>
+                            <li class="future">Utility Expansion - DApps & Staking (Mar 2026)</li>
+                            <li class="future">Viral CT Domination (Apr 2026)</li>
+                            <li class="future">Merch Launch (Q2 2026)</li>
+                            <li class="future">Bonk Cabal Alliance (Q2 2026)</li>
+                        </ul>
+                    </div>
+
+                    <div class="roadmap-card full-width">
+                        <div class="roadmap-header">
+                            <h3>Phase 2+: 2027+ — Scaling & Dominance</h3>
+                            <span class="status-badge planned">Planned</span>
+                        </div>
+                        <ul>
+                            <li class="future">Major CEX Listings</li>
+                            <li class="future">Utility Expansion</li>
+                            <li class="future">Ecosystem Partnerships</li>
+                            <li class="future">Community & Governance</li>
+                            <li class="future">Long-Term Vision</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer id="socials">
+            <div class="container">
+                <div class="footer-content">
+                    <div class="footer-section">
+                        <h4>Follow $🎒</h4>
+                        <div class="footer-buttons">
+                            <a href="https://x.com/Bag_on_Bonk" target="_blank" class="footer-button">X / Twitter</a>
+                            <a href="https://t.me/bonkbagcto" target="_blank" class="footer-button">Telegram</a>
+                            <a href="https://x.com/i/communities/1949268124395548692" target="_blank" class="footer-button">X CTO Community</a>
+                        </div>
+                    </div>
+                    <div class="footer-section">
+                        <h4>Why $🎒</h4>
+                        <p>Emoji ticker. Solana speed. CTO muscle. We don't ask permission — we set the tone and move the market.</p>
+                        <p style="margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255,68,68,0.1);">Nothing here is financial advice. DYOR. Stay feral.</p>
+                    </div>
+                </div>
+                <div class="disclaimer">
+                    <div style="display: flex; justify-content: center; align-items: center; gap: 8px; margin-bottom: 20px; opacity: 0.6;">
+                        <span style="font-size: 12px; color: #999;">Powered by</span>
+                        <svg width="16" height="16" viewBox="0 0 397.7 311.7" style="display: inline-block; vertical-align: middle;">
+                            <defs>
+                                <linearGradient id="solanaGradFooter" x1="360.8791" y1="351.4553" x2="141.213" y2="-69.2936" gradientTransform="matrix(1 0 0 -1 0 314)" gradientUnits="userSpaceOnUse">
+                                    <stop offset="0" style="stop-color:#00FFA3"/>
+                                    <stop offset="1" style="stop-color:#DC1FFF"/>
+                                </linearGradient>
+                                <linearGradient id="solanaGrad2Footer" x1="264.8291" y1="401.6014" x2="45.163" y2="-19.1475" gradientTransform="matrix(1 0 0 -1 0 314)" gradientUnits="userSpaceOnUse">
+                                    <stop offset="0" style="stop-color:#00FFA3"/>
+                                    <stop offset="1" style="stop-color:#DC1FFF"/>
+                                </linearGradient>
+                                <linearGradient id="solanaGrad3Footer" x1="312.5484" y1="376.688" x2="92.8822" y2="-44.061" gradientTransform="matrix(1 0 0 -1 0 314)" gradientUnits="userSpaceOnUse">
+                                    <stop offset="0" style="stop-color:#00FFA3"/>
+                                    <stop offset="1" style="stop-color:#DC1FFF"/>
+                                </linearGradient>
+                            </defs>
+                            <path d="M64.6,237.9c2.4-2.4,5.7-3.8,9.2-3.8h317.4c5.8,0,8.7,7,4.6,11.1l-62.7,62.7c-2.4,2.4-5.7,3.8-9.2,3.8H6.5c-5.8,0-8.7-7-4.6-11.1L64.6,237.9z" style="fill:url(#solanaGradFooter)"/>
+                            <path d="M64.6,3.8C67.1,1.4,70.4,0,73.8,0h317.4c5.8,0,8.7,7,4.6,11.1l-62.7,62.7c-2.4,2.4-5.7,3.8-9.2,3.8H6.5c-5.8,0-8.7-7-4.6-11.1L64.6,3.8z" style="fill:url(#solanaGrad2Footer)"/>
+                            <path d="M333.1,120.1c-2.4-2.4-5.7-3.8-9.2-3.8H6.5c-5.8,0-8.7,7-4.6,11.1l62.7,62.7c2.4,2.4,5.7,3.8,9.2,3.8h317.4c5.8,0,8.7-7,4.6-11.1L333.1,120.1z" style="fill:url(#solanaGrad3Footer)"/>
+                        </svg>
+                        <span style="font-size: 12px; color: #999;">Solana</span>
+                    </div>
+                    <p>$BAG is a community-driven meme token. This is not financial advice. Always do your own research. Cryptocurrency investments carry risk.</p>
+                    <p style="margin-top: 10px;">© 2026 $BAG Community Take Over. All rights reserved.</p>
+                </div>
+            </div>
+        </footer>
+    </main>
+    <script>
+(function(){const e="7mjzzmb3ihny4aq7hlsxsixwwpg7r2a3rumyrfcsvidy",t=3e4;async function a(){try{const t=await fetch(`https://api.dexscreener.com/latest/dex/pairs/solana/${e}`),a=await t.json();if(a&&a.pair){const e=a.pair,t=parseFloat(e.priceUsd),s=parseFloat(e.priceChange.h24);let n;n=t<1e-5?"$"+t.toFixed(8):t<.01?"$"+t.toFixed(6):t<1?"$"+t.toFixed(4):"$"+t.toFixed(2);const i=s>=0,o=i?"positive":"negative",l=i?"▲":"▼",r=(i?"+":"")+s.toFixed(2)+"%",d=document.getElementById("priceTicker");d&&(d.innerHTML=`<span class="ticker-symbol">$BAG</span><span class="ticker-price">${n}</span><span class="ticker-change ${o}"><span class="ticker-arrow">${l}</span> ${r}</span>`)}}catch(e){console.log("Price update failed:",e)}}a(),setInterval(a,t)})(),function(){const e="7mjzzmb3ihny4aq7hlsxsixwwpg7r2a3rumyrfcsvidy";function t(e){return e>=1e6?(e/1e6).toFixed(2)+"M":e>=1e3?(e/1e3).toFixed(1)+"K":e.toLocaleString()}async function a(){try{const a=await fetch(`https://api.dexscreener.com/latest/dex/pairs/solana/${e}`),s=await a.json();if(s&&s.pair){const e=s.pair,a=(e.txns?.h24?.buys||0)+(e.txns?.h24?.sells||0),n=e.marketCap||0;let i=1700;n>0&&(i=Math.floor(n/100*1.2),i=Math.max(1700,Math.min(i,5e4)));const o=document.getElementById("holderCount"),l=document.getElementById("txCount");o&&(o.textContent=t(i),o.classList.add("loaded")),l&&(l.textContent=t(a),l.classList.add("loaded"))}}catch(e){console.log("Holder stats update failed:",e);const a=document.getElementById("holderCount"),s=document.getElementById("txCount");a&&(a.textContent="1.7K+"),s&&(s.textContent="856")}}a(),setInterval(a,6e4)}(),function(){const e=document.getElementById("typingHeadline");if(!e)return;const t="$🎒 — Community Take Over.";let a=0;function s(){if(a<t.length){e.textContent=t.substring(0,a+1),a++;const n=a===t.length?500:50*Math.random()+50;setTimeout(s,n)}else setTimeout((()=>{e.classList.add("typing-complete")}),1e3)}setTimeout(s,300)}(),function(){const e=document.getElementById("particleCanvas");if(!e)return;const t=e.getContext("2d");let a=[],s;function n(){e.width=window.innerWidth,e.height=window.innerHeight}class i{constructor(){this.x=Math.random()*e.width,this.y=Math.random()*e.height,this.size=3*Math.random()+1,this.speedX=.5*Math.random()-.25,this.speedY=.5*Math.random()-.25,this.opacity=.5*Math.random()+.2;const t=["rgba(255, 140, 66, ","rgba(255, 160, 96, ","rgba(0, 255, 163, ","rgba(220, 31, 255, "];this.color=t[Math.floor(Math.random()*t.length)]}update(){this.x+=this.speedX,this.y+=this.speedY,this.x>e.width&&(this.x=0),this.x<0&&(this.x=e.width),this.y>e.height&&(this.y=0),this.y<0&&(this.y=e.height)}draw(){t.fillStyle=this.color+this.opacity+")",t.beginPath(),t.arc(this.x,this.y,this.size,0,2*Math.PI),t.fill(),t.shadowBlur=10,t.shadowColor=this.color+"0.8)"}}function o(){a=[];const t=Math.min(Math.floor(e.width*e.height/15e3),80);for(let e=0;e<t;e++)a.push(new i)}function l(){t.clearRect(0,0,e.width,e.height),a.forEach((e=>{e.update(),e.draw()}));for(let e=0;e<a.length;e++)for(let s=e+1;s<a.length;s++){const n=a[e].x-a[s].x,i=a[e].y-a[s].y,o=Math.sqrt(n*n+i*i);o<120&&(t.strokeStyle="rgba(255, 140, 66, "+.15*(1-o/120)+")",t.lineWidth=.5,t.beginPath(),t.moveTo(a[e].x,a[e].y),t.lineTo(a[s].x,a[s].y),t.stroke())}s=requestAnimationFrame(l)}n(),o(),l(),window.addEventListener("resize",(()=>{n(),o()})),window.innerWidth<768&&(a=a.slice(0,Math.floor(.4*a.length)))}(),function(){const e=document.getElementById("scrollProgress");if(!e)return;function t(){const t=window.innerHeight,a=document.documentElement.scrollHeight,s=window.pageYOffset||document.documentElement.scrollTop,n=a-t,i=s/n*100;e.style.width=i+"%"}window.addEventListener("scroll",t,{passive:!0}),t()}();
+    </script>
+
+<!-- FLOATING BACKPACK LEADERBOARD BUTTON -->
+<a href="https://leaderboard.bag.red" target="_blank" id="bag-float" title="Top 100 Leaderboard">
+  <svg viewBox="0 0 64 64" width="40" height="40" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M20 18C20 18 18 22 18 28" stroke="#fff" stroke-width="2.5" stroke-linecap="round" opacity="0.7"/>
+    <path d="M44 18C44 18 46 22 46 28" stroke="#fff" stroke-width="2.5" stroke-linecap="round" opacity="0.7"/>
+    <path d="M26 14C26 10 38 10 38 14" stroke="#fff" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+    <rect x="16" y="18" width="32" height="32" rx="6" fill="#E63946" stroke="#fff" stroke-width="1.5" opacity="0.95"/>
+    <rect x="22" y="30" width="20" height="14" rx="3" fill="#CC2936" stroke="#fff" stroke-width="1" opacity="0.8"/>
+    <line x1="26" y1="30" x2="38" y2="30" stroke="#FFD700" stroke-width="1.5" stroke-linecap="round"/>
+    <text x="32" y="42" text-anchor="middle" font-size="11" fill="#FFD700">🏆</text>
+    <rect x="16" y="46" width="32" height="4" rx="2" fill="#8B1A1A" opacity="0.5"/>
+  </svg>
+  <span>Leaderboard</span>
+</a>
+<style>
+  #bag-float{position:fixed;bottom:24px;right:24px;z-index:99999;display:flex;align-items:center;gap:8px;background:linear-gradient(145deg,#CC2936 0%,#8B1A1A 100%);color:#fff;text-decoration:none;font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:13px;font-weight:700;padding:10px 18px 10px 12px;border-radius:20px;box-shadow:0 4px 20px rgba(204,41,54,0.5),0 0 0 2px rgba(255,255,255,0.08),inset 0 1px 0 rgba(255,255,255,0.15);transition:all 0.3s ease;animation:bag-bounce 3s ease-in-out infinite;letter-spacing:0.5px;border:1px solid rgba(255,255,255,0.1);}
+  @keyframes bag-bounce{0%,100%{transform:translateY(0);box-shadow:0 4px 20px rgba(204,41,54,0.5)}50%{transform:translateY(-4px);box-shadow:0 8px 30px rgba(204,41,54,0.6),0 0 0 3px rgba(230,57,70,0.2)}}
+  #bag-float:hover{transform:translateY(-3px) scale(1.05)!important;box-shadow:0 8px 32px rgba(204,41,54,0.7),0 0 0 3px rgba(230,57,70,0.3)!important;animation:none;}
+  #bag-float svg{flex-shrink:0;}
+  @media(max-width:640px){#bag-float{bottom:16px;right:16px;padding:10px 14px 10px 10px;font-size:12px;}#bag-float svg{width:32px;height:32px;}}
+</style>
+<!-- END FLOATING BACKPACK BUTTON -->
+</body>
+</html>
