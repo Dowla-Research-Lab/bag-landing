@@ -1,9 +1,8 @@
 {
   "rewrites": [
-    { "source": "/", "destination": "/index.html" },
     { "source": "/prompt", "destination": "https://bag-ai-tools.vercel.app/prompt" },
-    { "source": "/prompt/?(.*)", "destination": "https://bag-ai-tools.vercel.app/prompt" },
-    { "source": "/api/?(.*)", "destination": "https://bag-ai-tools.vercel.app/api/$1" },
+    { "source": "/prompt/:path*", "destination": "https://bag-ai-tools.vercel.app/prompt/:path*" },
+    { "source": "/api/:path*", "destination": "https://bag-ai-tools.vercel.app/api/:path*" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
