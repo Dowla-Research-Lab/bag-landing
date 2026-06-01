@@ -19,6 +19,7 @@
     nav{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
     .logo{display:flex;align-items:center;gap:8px}.logo-emoji{font-size:28px}.logo-text{font-family:var(--display);font-size:22px;color:var(--red);letter-spacing:-.5px}
     .nav-links{display:flex;list-style:none;gap:24px}.nav-links a{color:var(--g4);text-decoration:none;font-weight:600;font-size:13px;letter-spacing:1px;text-transform:uppercase;transition:color .2s}.nav-links a:hover{color:var(--white)}
+    .nav-ai-link{display:inline-flex;align-items:center;gap:6px}.new-badge{font-size:9px;font-weight:800;background:var(--red);color:#fff;padding:2px 6px;border-radius:3px;letter-spacing:.5px;line-height:1.2;animation:new-pulse 2s ease-in-out infinite}@keyframes new-pulse{0%,100%{opacity:1}50%{opacity:.6}}
     .price-ticker{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:6px 14px;display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:13px}.ticker-symbol{color:var(--red);font-weight:700}.ticker-price{color:var(--white)}.ticker-change{padding:3px 7px;border-radius:3px;font-size:11px;font-weight:700}.ticker-change.positive{background:rgba(0,255,0,.1);color:#0f0}.ticker-change.negative{background:rgba(255,0,0,.1);color:var(--red)}
     .cta-button{background:var(--red);color:var(--black);padding:12px 28px;border:none;border-radius:4px;font-family:var(--body);font-size:15px;font-weight:800;cursor:pointer;transition:all .2s;text-decoration:none;display:inline-block;text-transform:uppercase;letter-spacing:1px}.cta-button:hover{background:#c00;box-shadow:0 0 30px var(--red-glow);transform:translateY(-1px)}
     .secondary-button{background:transparent;color:var(--g3);padding:12px 28px;border:1px solid var(--border-light);border-radius:4px;font-size:15px;font-weight:700;cursor:pointer;transition:all .2s;text-decoration:none;display:inline-block;text-transform:uppercase;letter-spacing:1px}.secondary-button:hover{border-color:var(--g4);color:var(--white)}
@@ -57,7 +58,7 @@
 <div id="scrollProgress"></div>
 <header><div class="container"><nav>
   <div class="logo"><span class="logo-emoji">🎒</span><span class="logo-text">$🎒</span></div>
-  <ul class="nav-links"><li><a href="#tiers">Tiers</a></li><li><a href="#vision">Vision</a></li><li><a href="#news">News</a></li><li><a href="#roadmap">Roadmap</a></li></ul>
+  <ul class="nav-links"><li><a href="#tiers">Tiers</a></li><li><a href="#vision">Vision</a></li><li><a href="#news">News</a></li><li><a href="#roadmap">Roadmap</a></li><li><a href="/prompt" class="nav-ai-link"><span class="new-badge">NEW</span> AI Tools</a></li></ul>
   <div class="price-ticker" id="priceTicker"><span class="ticker-symbol">$🎒</span><span class="ticker-price" id="tickerPrice">Loading...</span></div>
   <a href="https://t.me/bonkbagcto" target="_blank" class="cta-button">Join $🎒</a>
 </nav></div></header>

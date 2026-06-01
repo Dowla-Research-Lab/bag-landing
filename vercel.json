@@ -1,0 +1,9 @@
+{
+  "rewrites": [
+    { "source": "/", "destination": "/index.html" },
+    { "source": "/prompt", "destination": "https://bag-ai-tools.vercel.app/prompt" },
+    { "source": "/prompt/?(.*)", "destination": "https://bag-ai-tools.vercel.app/prompt" },
+    { "source": "/api/?(.*)", "destination": "https://bag-ai-tools.vercel.app/api/$1" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}
